@@ -442,7 +442,7 @@ async function saveResultImage(){
  button.disabled=true;button.textContent="이미지 만드는 중…";
  try{
   if(typeof html2canvas!=="function")throw new Error("Image exporter unavailable");
-  const canvas=await html2canvas(capture,{backgroundColor:"#f6f6f3",scale:2,useCORS:true,logging:false,scrollX:0,scrollY:-window.scrollY});
+  const captureCanvas=await html2canvas(capture,{backgroundColor:"#f6f6f3",scale:2,useCORS:true,logging:false,scrollX:0,scrollY:-window.scrollY});const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d");canvas.width=1080;canvas.height=1920;ctx.fillStyle="#f6f6f3";ctx.fillRect(0,0,canvas.width,canvas.height);const paddingX=72,paddingY=96;const scale=Math.min((canvas.width-paddingX*2)/captureCanvas.width,(canvas.height-paddingY*2)/captureCanvas.height);const width=captureCanvas.width*scale,height=captureCanvas.height*scale;ctx.drawImage(captureCanvas,(canvas.width-width)/2,(canvas.height-height)/2,width,height);
   const blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/png"));
   if(!blob)throw new Error("PNG conversion failed");
   const url=URL.createObjectURL(blob),link=document.createElement("a");
