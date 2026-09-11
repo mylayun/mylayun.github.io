@@ -175,34 +175,8 @@ function scoreRegional(type,row,num){
  return {score,grade,tag,rowText,colText};
 }
 function scoreSeat(type,row,num){
-  /*
-   * MDSPOTY 좌석 평가 v5
-   *
-   * 등급 정책
-   * A : 90~100
-   * B : 80~89
-   * C : 70~79
-   * D : 10~69
-   *
-   * 용산 IMAX 기준 목표:
-   * A3 = 10
-   * A23 = 35
-   * I1 = 20
-   * G4 = 35
-   *
-   * 추천표와의 정합성:
-   * - SweetSpot(J,K,L / 11~34): 전부 A
-   * - Experienced(H,I / 13~32): 전부 A
-   * - Extremer(F,G / 16~29): 대부분 B, 일부 C
-   *
-   * ※ 기존 L14=85 목표는 SweetSpot 전체 A 정책과 충돌하므로
-   *   v4에서는 L14를 A등급으로 우선한다.
-   */
-
+  
   if(type==="yongsan"){
-    // 해외 IMAX 조사 원칙 반영: 좌석 번호가 아니라 실제 좌석 좌표의
-    // 스크린 중앙 이탈량을 사용한다. 통로·좌석 블록 때문에 번호상 중앙과
-    // 실제 시야 중앙이 달라지는 문제를 줄인다.
     const actualSeat=findSeat(type,row+num);
     const centerSeat=findSeat(type,"J23");
     const seatCenter=actualSeat.left+actualSeat.width/2;
@@ -211,18 +185,11 @@ function scoreSeat(type,row,num){
     const rowSeats=seatsOf(type).filter(item=>item.id.match(/^[A-Z]+/)[0]===row);
     const rowEdge=Math.max(...rowSeats.map(item=>Math.abs(item.left+item.width/2-screenCenter)));
     const edgeRatio=d/(rowEdge/38);
-
-    // 행별 기본 점수. 기존보다 전반적으로 관대하게 조정해
-    // 좋은 거리의 일반석도 C/B등급을 받기 쉽게 설계.
     const rowBase={
       A:40, B:51, C:62, D:72, E:79,
       F:85, G:89, H:96, I:99, J:100,
       K:100, L:100, M:92, N:86, O:77, P:68
     };
-
-    // 좌우 감점.
-    // 앞쪽일수록 좌우 시야각의 불리함이 상대적으로 커지고,
-    // SweetSpot(J~L)은 감점을 작게 해서 11~34 전체가 A가 되도록 한다.
     let sideRate;
     if(row==="J" || row==="K" || row==="L"){
       sideRate = 0.18;
@@ -235,13 +202,8 @@ function scoreSeat(type,row,num){
     }
 
     let score=rowBase[row] - d*sideRate;
-
-    // 각 행의 실제 끝 좌석은 전방일수록 화면 왜곡·목 회전이 커진다는
-    // 해외 관람 사례를 반영해 강하게 감점한다.
     if(edgeRatio>=.92) score-=12;
     else if(edgeRatio>=.78) score-=5;
-
-    // 사용자가 지정한 용산 기준점 보정
     if(row==="A" && num===3) score=10;
     if(row==="A" && num===23) score=35;
     if(row==="I" && num===1) score=20;
@@ -250,26 +212,16 @@ function scoreSeat(type,row,num){
     const isBest=["J","K","L"].includes(row) && num>=11 && num<=34;
     const isImmersive=["H","I"].includes(row) && num>=13 && num<=32;
     const isExtreme=["F","G"].includes(row) && num>=16 && num<=29;
-
-    // 추천 구간은 최소 등급을 강제한다.
-    // SweetSpot 전체 A
     if(isBest){
       score=Math.max(score,90);
     }
-
-    // Experienced는 전부 A
     if(isImmersive){
       score=Math.max(score,90);
     }
-
-    // Extremer는 대부분 B, 중앙에서 먼 일부는 C가 가능
     if(isExtreme){
-      // F는 바깥쪽이 조금 더 불리하고 G는 조금 더 유리하게
       const minScore=(row==="G" && num>=18 && num<=27)?82:78;
       score=Math.max(score,minScore);
     }
-
-    // A등급은 추천표에서 확인된 최고의 자리·몰입석에만 부여한다.
     if(!isBest&&!isImmersive) score=Math.min(score,89);
     score=Math.round(Math.max(10,Math.min(100,score)));
 
@@ -293,30 +245,15 @@ function scoreSeat(type,row,num){
 
     return {score,grade,tag,rowText,colText};
   }
-
-  // 용산을 제외한 상영관은 PNG 추천 구역의 최고의 자리 좌표를
-  // 기준 거리로 사용한다. 실제 좌석 배치를 유지하면서 지점별 명당을 보장한다.
   if(window.RECOMMENDATION_ZONES?.[type])return scoreByRecommendations(type,row,num);
   if(REGIONAL[type]) return scoreRegional(type,row,num);
   if(OFFICIAL_SEAT_MAPS[type]) return scoreOfficial(type,row,num);
-
-  // 센텀시티 IMAX
-  // 센텀 추천표 반영:
-  // - A~B열: 최후의 용자석(매우 앞쪽) → 강한 감점
-  // - C~D열: 사이드 좌석 → 앞쪽 + 측면 감점
-  // - E 18~28: Extremer → 대부분 B, 일부 C
-  // - F,G 16~30: Experienced → A/B
-  // - H,I 14~32: SweetSpot → 전부 A
-  // - J~L: SweetSpot과 가까운 좋은 거리지만, 중앙에서 멀어질수록 감점
   const d=Math.abs(num-23);
 
   const rowBase={
     A:34, B:43, C:54, D:64,
     E:79, F:88, G:94, H:100, I:100, J:98, K:94, L:88
   };
-
-  // 센텀은 스크린과 앞열 사이 거리가 짧고 경사도도 낮아
-  // 앞열의 좌우 시야각 불리함이 크게 느껴지도록 설정.
   let sideRate;
   if(["H","I"].includes(row)){
     sideRate=0.40;
@@ -331,30 +268,16 @@ function scoreSeat(type,row,num){
   }
 
   let score=rowBase[row]-d*sideRate;
-
-  // 좌우 끝자리: 센텀은 화면과 좌석 간 거리가 짧기 때문에
-  // 단순 거리보다 측면 시야각의 불리함을 강하게 반영.
   if(num<=3 || num>=43) score-=8;
   else if(num<=6 || num>=40) score-=4;
-
-  // C~D열은 앞쪽이면서 사이드가 특히 불리하므로 추가 감점.
   if(["C","D"].includes(row) && (num<=8 || num>=38)) score-=8;
-
-  // A~B열은 최후의 용자석: 좌우 위치와 무관하게 낮은 평가.
   if(["A","B"].includes(row)) score=Math.min(score,59);
-
-  // 추천 구간의 등급 분포를 강제한다.
-  // SweetSpot(H,I 14~32): 전부 A
   if(["H","I"].includes(row) && num>=14 && num<=32){
     score=Math.max(score,90);
   }
-
-  // Experienced(F,G 16~30): A 또는 B
   if(["F","G"].includes(row) && num>=16 && num<=30){
     score=Math.max(score,80);
   }
-
-  // Extremer(E 18~28): 대부분 B, 가장자리 쪽 일부 C 허용
   if(row==="E" && num>=18 && num<=28){
     const minScore=(num>=20 && num<=26)?80:74;
     score=Math.max(score,minScore);
@@ -398,7 +321,6 @@ function renderMap(type,id){
  canvas.innerHTML=""; canvas.style.width=t.width+"px"; canvas.style.height=t.height+"px";
  const isOfficial=!!OFFICIAL_SEAT_MAPS[type],isRegional=!!REGIONAL[type]&&!isOfficial,screen=document.createElement("div");screen.className="map-screen";screen.style.left=isRegional?"85px":isOfficial?Math.round(t.width*.18)+"px":"280px";screen.style.top="8px";screen.style.width=isRegional?"750px":isOfficial?Math.round(t.width*.64)+"px":"1370px";screen.style.height="35px";canvas.appendChild(screen);
  $("mapNote").textContent=isOfficial?"공식 CGV 예매 페이지의 실제 좌석 좌표를 반영했습니다. 연한 회색은 우대석입니다.":isRegional?"추천 자료의 좌석 구역을 구조화한 안내 배치도입니다. 색상은 추천 등급, 연한 회색은 휠체어석입니다.":"실제 CGV 좌석 배치의 위치를 기준으로 표시했습니다. 연한 회색은 휠체어석입니다.";
- // Doors are included only as visual landmarks; seat coordinates themselves come directly from the supplied CGV map data.
  const doors=OFFICIAL_SEAT_MAPS[type]?.doors||(type==="yongsan"?[{left:665,top:19},{left:1292,top:19}]:[]);
  doors.forEach(({left,top})=>{const d=document.createElement("div");d.className="door";d.style.left=left+"px";d.style.top=top+"px";d.style.width="38px";d.style.height="19px";canvas.appendChild(d)});
  const chosen=findSeat(type,id);
