@@ -453,3 +453,16 @@ async function saveResultImage(){
 }
   $("analyze").onclick=analyze;
 $("saveImage").onclick=saveResultImage;
+
+$("theater").addEventListener("change",e=>{
+ const infoOnly=!!THEATERS[e.target.value].infoOnly;
+ $("seatLabel").textContent=infoOnly?"좌석 배치":"내 좌석";$("seatInput").disabled=infoOnly;$("seatInput").value="";
+ $("seatInput").placeholder=infoOnly?"좌석 배치 자료 수집 중":"예: G15";$("analyze").textContent=infoOnly?"상영관 정보 보기":"좌석 분석하기";
+ $("seatInput").nextElementSibling.textContent=infoOnly?"상영관 사양과 추천 정도를 확인할 수 있어요.":"좌석 번호를 입력해주세요. 예: G15";
+});
+$("seatInput").addEventListener("keydown",e=>{if(e.key==="Enter")analyze()});
+$("back").onclick=$("retry").onclick=()=>{$("result").classList.add("hidden");$("home").classList.remove("hidden");};
+window.addEventListener("resize",()=>{if(!$("result").classList.contains("hidden")){const id=$("resultSeat").textContent;renderMap($("theater").value,id)}});
+</script>
+</body>
+</html>
