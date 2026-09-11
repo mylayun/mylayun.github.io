@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MDSPOTY · IMAX 좌석 분석</title>
+<style>
+:root{--bg:#f6f6f3;--card:#fff;--text:#171717;--muted:#777;--line:#e8e8e3}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+button,input,select{font:inherit}.app{width:min(100%,480px);margin:auto;min-height:100vh}.screen{padding:28px 20px 40px}.hidden{display:none}
+.brand{font-size:14px;font-weight:900;letter-spacing:.08em;margin-bottom:64px}.hero h1{font-size:31px;line-height:1.25;letter-spacing:-.045em;margin:0 0 12px}.hero p{font-size:14px;color:var(--muted);line-height:1.65;margin:0}
+.form{margin-top:40px}.label{font-size:13px;font-weight:800;margin:0 0 10px}.select,.input{width:100%;height:54px;border:1px solid var(--line);border-radius:14px;background:#fff;padding:0 15px;font-size:16px;outline:0}.input{text-transform:uppercase}.select:focus,.input:focus{border-color:#aaa}.input.invalid{border-color:#d33}
+.btn{width:100%;height:56px;border:0;border-radius:15px;background:#111;color:#fff;font-size:16px;font-weight:850;margin-top:14px;cursor:pointer}.hint{font-size:12px;color:#999;margin-top:9px}
+.result-top{display:flex;align-items:center;gap:10px;margin-bottom:20px}.back{border:0;background:none;font-size:28px;line-height:1;padding:0;cursor:pointer}.theater{font-size:13px;color:var(--muted)}
+.result-capture{background:var(--bg);padding:0 0 2px}.capture-theater{font-size:13px;color:var(--muted);margin-bottom:12px}.result-title{font-size:29px;font-weight:900;letter-spacing:-.045em;margin:0 0 4px}.seat-name{font-size:14px;color:var(--muted)}
+.score-card{margin-top:22px;background:#111;color:#fff;border-radius:23px;padding:23px}.score-row{display:flex;justify-content:space-between;align-items:flex-end}.grade{font-size:52px;font-weight:950;letter-spacing:-.06em}.score{font-size:17px;font-weight:850;color:#d1d1d1}.tag{display:inline-block;margin-top:12px;padding:7px 10px;border-radius:99px;background:#2c2c2c;font-size:12px;font-weight:850}.desc{margin:14px 0 0;color:#ccc;font-size:13px;line-height:1.55}
+.section{margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px}.section h2{font-size:15px;margin:0 0 14px}
+.map-viewport{width:100%;overflow:hidden;border-radius:16px;background:#fafaf8;position:relative}.map-canvas{position:relative;transform-origin:top left}.map-screen{position:absolute;border-top:3px solid #bbb;border-radius:50%;opacity:.8}.door{position:absolute;background:#ddd;border-radius:3px}.seat{position:absolute;width:38px;height:38px;border:1px solid #aaa;border-radius:7px;background:#fff;color:#555;font-size:9px;display:flex;align-items:center;justify-content:center;line-height:1;user-select:none}.seat.unavailable{opacity:.5}.seat.preferential{background:#f3f3ef}.seat.selected{background:#111;color:#fff;border-color:#111;z-index:5;box-shadow:0 0 0 3px #fff,0 0 0 5px #111}.map-note{font-size:11px;color:#999;text-align:center;margin-top:10px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:#f7f7f4;border-radius:14px;padding:13px}.stat small{display:block;color:#888;font-size:11px;margin-bottom:5px}.stat b{font-size:15px}
+.hall-summary{margin-top:18px;background:#f7f7f4;border-radius:14px;padding:14px}.hall-summary b{font-size:14px}.hall-summary p{font-size:12px;color:#777;line-height:1.6;margin:9px 0 0}.hall-specs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.hall-spec{background:#fff;border-radius:10px;padding:9px}.hall-spec small{display:block;color:#888;font-size:10px;margin-bottom:3px}.hall-spec b{font-size:12px}.screen-rank{display:block;margin-top:5px;color:#4e564b;font-size:10px;font-weight:800}.recommend-level{display:inline-block;margin-top:10px;padding:5px 8px;border-radius:99px;background:#e9ece6;font-size:11px;font-weight:800;color:#4e564b}
+.save{background:#fff;color:#111;border:1px solid #111;margin-top:18px}.retry{background:#fff;color:#111;border:1px solid #ddd;margin-top:10px}
+@media(min-width:700px){body{padding:30px 0}.app{border-radius:24px}}
+.seat.sweet{background:#b9f0d7;border-color:#66b995}.seat.exp{background:#d9d1ff;border-color:#998bdf}.seat.ext{background:#ffd4aa;border-color:#e19a59}.seat.why{background:#fff0a8;border-color:#d7bc4a}
+</style>
+</head>
+<body>
+<div class="app">
+<section id="home" class="screen">
+  <div class="brand">MDSPOTY</div>
+  <div class="hero"><h1>내 IMAX 좌석,<br>몇 점일까?</h1><p>상영관과 좌석을 입력하면<br>좌석 위치를 분석해 점수와 등급을 알려드려요.</p></div>
+  <div class="form">
+    <div class="label">상영관</div>
+    <select id="theater" class="select">
+      <optgroup label="서울"><option value="yongsan">CGV 용산아이파크몰 IMAX</option><option value="apgujeong">CGV 압구정 IMAX</option><option value="yeongdeungpo">CGV 영등포 IMAX</option><option value="wangsimni">CGV 왕십리 IMAX</option><option value="cheonho">CGV 천호 IMAX</option></optgroup>
+      <optgroup label="경기 · 인천"><option value="gwanggyo">CGV 광교 IMAX</option><option value="dongtan">CGV 동탄 IMAX</option><option value="sopung">CGV 소풍 IMAX</option><option value="wirye">CGV 스타필드시티위례 IMAX</option><option value="uijeongbu">CGV 의정부 IMAX</option><option value="ilsan">CGV 일산 IMAX</option><option value="pyeongtaek">CGV 평택 IMAX</option><option value="incheon">CGV 인천 IMAX</option></optgroup>
+      <optgroup label="강원 · 충청"><option value="chuncheon">CGV 춘천 IMAX</option><option value="daejeon">CGV 대전 IMAX</option><option value="daejeonTerminal">CGV 대전터미널 IMAX</option><option value="cheon">CGV 천안터미널 IMAX</option><option value="cheonanPentaport">CGV 천안펜타포트 IMAX</option><option value="cheongju">CGV 청주(서문) IMAX</option></optgroup>
+      <optgroup label="대구 · 부산 · 울산 · 경상"><option value="daegu">CGV 대구 IMAX</option><option value="seomyeon">CGV 서면 IMAX</option><option value="centum">CGV 센텀시티 IMAX</option><option value="ulsan">CGV 울산삼산 IMAX</option><option value="changwon">CGV 창원더시티 IMAX</option></optgroup>
+      <optgroup label="전라"><option value="suncheon">CGV 순천신대 IMAX</option><option value="jeonju">CGV 전주효자 IMAX</option></optgroup>
+    </select>
+    <div class="label" id="seatLabel" style="margin-top:22px">내 좌석</div>
+    <input id="seatInput" class="input" maxlength="3" placeholder="예: G15" autocomplete="off">
+    <div class="hint">좌석 번호를 입력해주세요. 예: G15</div>
+    <button class="btn" id="analyze">좌석 분석하기</button>
+  </div>
+</section>
+
+<section id="result" class="screen hidden">
+  <div class="result-top"><button class="back" id="back">‹</button><div class="theater" id="resultTheater"></div></div>
+  <div id="resultCapture" class="result-capture">
+    <div class="capture-theater" id="captureTheater"></div>
+    <h1 class="result-title" id="resultSeat"></h1><div class="seat-name">내가 선택한 좌석</div>
+    <div class="score-card"><div class="score-row"><div class="grade" id="grade"></div><div class="score" id="score"></div></div><div class="tag" id="tag"></div><p class="desc" id="desc"></p></div>
+    <div class="section"><h2>내 좌석 위치</h2><div class="map-viewport" id="mapViewport"><div class="map-canvas" id="mapCanvas"></div></div><div class="map-note" id="mapNote">실제 CGV 좌석 배치의 위치를 기준으로 표시했습니다. 연한 회색은 휠체어석입니다.</div></div>
+    <div class="section"><h2>상영관 정보</h2><div class="hall-summary"><b id="hallName"></b><div class="hall-specs"><div class="hall-spec"><small>영상 비율</small><b id="hallRatio"></b></div><div class="hall-spec"><small>화면 크기</small><b id="hallScreen"></b><span class="screen-rank" id="hallScreenRank"></span></div></div><p id="hallInfo"></p><span class="recommend-level" id="hallRecommend"></span></div></div>
+  </div>
+  <button class="btn save" id="saveImage">결과 이미지 저장</button>
+  <button class="btn retry" id="retry">다른 좌석 분석하기</button>
+</section>
+</div>
+<script src="seat-data.js"></script>
+<script src="recommendation-data.js"></script>
+<script src="official-seat-data.js"></script>
+<script src="theater-database.js"></script>
+<script>
+const THEATERS={
+ yongsan:{name:"CGV 용산아이파크몰 IMAX",centerX:950,rows:"ABCDEFGHIJKLMNOP".split(""),width:1938,height:684},
+ centum:{name:"CGV 센텀시티 IMAX",centerX:950,rows:"ABCDEFGHIJKL".split(""),width:1862,height:532}
+};
+const REGIONAL={
+ cheon:{name:"CGV 천안터미널 IMAX",rows:"ABCDEFGHIJ".split(""),zones:{ext:["C9-16"],exp:["D7-18","E7-18"],sweet:["F7-18","G7-18"]}},
+ changwon:{name:"CGV 창원더시티 IMAX",rows:"ABCDEFGHIJK".split(""),zones:{ext:["D9-16"],exp:["E7-18","F7-18"],sweet:["G5-20","H5-20"],why:["K9-16"]}},
+ dongtan:{name:"CGV 동탄 IMAX",rows:"ABCDEFGH".split(""),zones:{ext:["D9-19"],exp:["E7-21","F7-21"],sweet:["G7-21","H7-21"]}}
+};
+const HALL_INFO={
+ yongsan:{text:"실제 좌석 배치 자료를 기반으로 분석합니다. 최고의 자리는 J~L열 중앙 구간이에요.",recommend:"상영관 추천도 · 매우 높음"},
+ centum:{text:"실제 좌석 배치 자료를 기반으로 분석합니다. 최고의 자리는 H~I열 중앙 구간이에요.",recommend:"상영관 추천도 · 매우 높음"},
+ cheon:{text:"추천 자료 기준으로 C~G열의 찐덕후·몰입석·최고의 자리 구역을 구조화해 분석합니다.",recommend:"상영관 추천도 · 높음"},
+ changwon:{text:"추천 자료 기준으로 D~K열의 추천 구역과 WHY IMAX 구역을 분석합니다.",recommend:"상영관 추천도 · 높음"},
+ dongtan:{text:"동탄 IMAX XT 추천 자료를 기준으로 D~H열의 찐덕후·몰입석·최고의 자리 구역을 분석합니다.",recommend:"상영관 추천도 · 높음"},
+ apgujeong:{text:"170석 · 15.5m × 8.5m · IMAX LASER(XT) · 6채널 사운드 · HFR 지원 · 프라이빗 박스 보유",recommend:"상영관 추천도 · 보통"},
+ yeongdeungpo:{text:"387석 · IMAX LASER(CoLa) · 12채널 이머시브 사운드 · HFR 지원",recommend:"상영관 추천도 · 높음"},
+ wangsimni:{text:"268석 · 22m × 13.3m · IMAX LASER(CoLa) · 12채널 이머시브 사운드 · HFR 지원",recommend:"상영관 추천도 · 매우 높음"},
+ cheonho:{text:"323석 · 24.7m × 18.7m · IMAX LASER(CoLa) · 12채널 이머시브 사운드 · HFR 지원",recommend:"상영관 추천도 · 매우 높음"},
+ gwanggyo:{text:"282석 · 20m × 12m · IMAX LASER(CoLa) · 12채널 이머시브 사운드 · HFR 지원",recommend:"상영관 추천도 · 매우 높음"},
+ sopung:{text:"346석 · 16.1m × 9m · 디지털 IMAX",recommend:"상영관 추천도 · 보통"},
+ wirye:{text:"207석 · 14.8m × 8m · IMAX LASER(XT) · 12채널 이머시브 사운드 · HFR 지원",recommend:"상영관 추천도 · 보통"},
+ uijeongbu:{text:"266석 · 16.09m × 8.86m · IMAX LASER(XT) · 12채널 이머시브 사운드 · HFR 지원",recommend:"상영관 추천도 · 보통"},
+ ilsan:{text:"250석 · 21m × 11.5m · IMAX LASER(CoLa) · 12채널 이머시브 사운드 · HFR 지원",recommend:"상영관 추천도 · 높음"},
+ pyeongtaek:{text:"228석 · 14.2m × 7.8m · IMAX LASER(XT) · 12채널 이머시브 사운드 · HFR 지원",recommend:"상영관 추천도 · 보통"},
+ incheon:{text:"321석 · 17.2m × 9.2m · IMAX LASER(CoLa) · 12채널 이머시브 사운드 · HFR 지원",recommend:"상영관 추천도 · 높음"},
+ chuncheon:{text:"321석 · 16.8m × 9.4m · 디지털 IMAX",recommend:"상영관 추천도 · 보통"},
+ daejeon:{text:"364석 · 16m × 8.5m · 디지털 IMAX",recommend:"상영관 추천도 · 보통"},
+ daejeonTerminal:{text:"225석 · 13.5m × 7.5m · IMAX LASER(XT) · 12채널 이머시브 사운드 · HFR 지원",recommend:"상영관 추천도 · 보통"},
+ cheonanPentaport:{text:"167석 · 13.5m × 7.5m · IMAX LASER(XT) · 12채널 이머시브 사운드 · HFR 지원",recommend:"상영관 추천도 · 보통"},
+ cheongju:{text:"258석 · 18.4m × 9.9m · 디지털 2K IMAX",recommend:"상영관 추천도 · 보통"},
+ daegu:{text:"241석 · 17.5m × 8.9m · IMAX LASER(CoLa) · 12채널 이머시브 사운드 · HFR 지원",recommend:"상영관 추천도 · 보통"},
+ seomyeon:{text:"358석 · 19m × 11.2m · 디지털 IMAX",recommend:"상영관 추천도 · 높음"},
+ ulsan:{text:"441석 · 24.4m × 14.1m · IMAX LASER(CoLa) · 12채널 이머시브 사운드 · HFR 지원",recommend:"상영관 추천도 · 매우 높음"},
+ suncheon:{text:"213석 · 18.5m × 9.5m · IMAX LASER(XT) · 12채널 이머시브 사운드 · HFR 지원",recommend:"상영관 추천도 · 보통"},
+ jeonju:{text:"373석 · 24.4m × 14.1m · 빌트인 IMAX · HFR 지원",recommend:"상영관 추천도 · 매우 높음"}
+};
+const HALL_DETAILS={
+ yongsan:{ratio:"1.43:1 · 1.90:1",screen:"31m × 22.4m"},centum:{ratio:"1.90:1",screen:"30.2m × 15.7m"},cheon:{ratio:"1.90:1",screen:"15.7m × 8.2m"},changwon:{ratio:"1.90:1",screen:"15.6m × 8.8m"},dongtan:{ratio:"1.90:1",screen:"19m × 11m"},
+ apgujeong:{ratio:"1.90:1",screen:"15.5m × 8.5m"},yeongdeungpo:{ratio:"1.90:1",screen:"약 18m × 9.7m"},wangsimni:{ratio:"1.90:1",screen:"22m × 13.3m"},cheonho:{ratio:"1.90:1 상영",screen:"24.7m × 18.7m"},gwanggyo:{ratio:"1.90:1",screen:"20m × 12m"},sopung:{ratio:"1.90:1",screen:"16.1m × 9m"},wirye:{ratio:"1.90:1",screen:"14.8m × 8m"},uijeongbu:{ratio:"1.90:1",screen:"16.09m × 8.86m"},ilsan:{ratio:"1.90:1",screen:"21m × 11.5m"},pyeongtaek:{ratio:"1.90:1",screen:"14.2m × 7.8m"},incheon:{ratio:"1.90:1",screen:"17.2m × 9.2m"},
+ chuncheon:{ratio:"1.90:1",screen:"16.8m × 9.4m"},daejeon:{ratio:"1.90:1",screen:"16m × 8.5m"},daejeonTerminal:{ratio:"1.90:1",screen:"13.5m × 7.5m"},cheonanPentaport:{ratio:"1.90:1",screen:"13.5m × 7.5m"},cheongju:{ratio:"1.90:1",screen:"18.4m × 9.9m"},daegu:{ratio:"1.90:1",screen:"17.5m × 8.9m"},seomyeon:{ratio:"1.90:1",screen:"19m × 11.2m"},ulsan:{ratio:"1.90:1",screen:"24.4m × 14.1m"},suncheon:{ratio:"1.90:1",screen:"18.5m × 9.5m"},jeonju:{ratio:"1.90:1",screen:"24.4m × 14.1m"}
+};
+const INFO_ONLY_HALLS={
+ apgujeong:"CGV 압구정 IMAX",yeongdeungpo:"CGV 영등포 IMAX",wangsimni:"CGV 왕십리 IMAX",cheonho:"CGV 천호 IMAX",gwanggyo:"CGV 광교 IMAX",sopung:"CGV 소풍 IMAX",wirye:"CGV 스타필드시티위례 IMAX",uijeongbu:"CGV 의정부 IMAX",ilsan:"CGV 일산 IMAX",pyeongtaek:"CGV 평택 IMAX",incheon:"CGV 인천 IMAX",chuncheon:"CGV 춘천 IMAX",daejeon:"CGV 대전 IMAX",daejeonTerminal:"CGV 대전터미널 IMAX",cheonanPentaport:"CGV 천안펜타포트 IMAX",cheongju:"CGV 청주(서문) IMAX",daegu:"CGV 대구 IMAX",seomyeon:"CGV 서면 IMAX",ulsan:"CGV 울산삼산 IMAX",suncheon:"CGV 순천신대 IMAX",jeonju:"CGV 전주효자 IMAX"
+};
+Object.entries(INFO_ONLY_HALLS).forEach(([id,name])=>{THEATERS[id]={name,infoOnly:true};});
+function regionalZone(type,id){const config=REGIONAL[type];if(!config)return "";return Object.entries(config.zones).find(([,ranges])=>ranges.some(range=>{const [r,n]=range.split(/(?=\d)/),[from,to]=n.split("-").map(Number),num=+id.slice(1);return id[0]===r&&num>=from&&num<=to}))?.[0]||""}
+Object.entries(REGIONAL).forEach(([id,config])=>{THEATERS[id]={name:config.name,rows:config.rows,width:920,height:config.rows.length*42+92};SEATS[id]=config.rows.flatMap((row,rowIndex)=>Array.from({length:20},(_,index)=>{const number=index+1;return{id:row+number,left:50+index*42+(number>10?30:0),top:50+rowIndex*42,width:38,height:38,preferential:row===config.rows.at(-1)&&(number<=2||number>=19)}}));});
+Object.entries(OFFICIAL_SEAT_MAPS).forEach(([id,map])=>{
+ const rows=[...new Set(map.seats.map(seat=>seat.id.match(/^[A-Z]+/)[0]))];
+ THEATERS[id]={...THEATERS[id],name:THEATERS[id].name,width:map.width,height:map.height,rows,infoOnly:false};
+ SEATS[id]=map.seats;
+});
+const $=id=>document.getElementById(id);
+function seatsOf(type){return SEATS[type]}
+function findSeat(type,id){return seatsOf(type).find(s=>s.id===id)}
+function withFactors(result){return {...result,zone:result.tag};}
+function isInRecommendationRange(id,range){
+ const match=range.match(/^([A-Z]+)(\d+)-(\d+)$/),seat=id.match(/^([A-Z]+)(\d+)$/);
+ return !!match&&!!seat&&seat[1]===match[1]&&+seat[2]>=+match[2]&&+seat[2]<=+match[3];
+}
+function recommendationZone(type,id){
+ const zones=window.RECOMMENDATION_ZONES?.[type];
+ if(!zones)return "";
+ const order=[["best","best"],["immersion","immersion"],["jjindeokhu","extreme"],["avoid","avoid"],["whyIMAX","why"]];
+ return order.find(([,key])=>zones[key]?.some(range=>isInRecommendationRange(id,range)))?.[0]||"";
+}
+function scoreByRecommendations(type,row,num){
+ const id=row+num,seat=findSeat(type,id),all=seatsOf(type);
+ const left=Math.min(...all.map(item=>item.left)),right=Math.max(...all.map(item=>item.left)),top=Math.min(...all.map(item=>item.top)),bottom=Math.max(...all.map(item=>item.top));
+ const depth=(seat.top-top)/Math.max(1,bottom-top),centerX=(left+right)/2;
+ const side=Math.abs((seat.left+seat.width/2)-centerX)/Math.max(1,(right-left)/2);
+ const bestSeats=all.filter(item=>recommendationZone(type,item.id)==="best");
+ const idealDepth=bestSeats.length?bestSeats.reduce((sum,item)=>sum+(item.top-top)/Math.max(1,bottom-top),0)/bestSeats.length:.58;
+ const rowSeats=all.filter(item=>item.id.match(/^[A-Z]+/)[0]===row);
+ const rowEdge=Math.max(...rowSeats.map(item=>Math.abs(item.left+item.width/2-centerX)));
+ const edgeRatio=Math.abs(seat.left+seat.width/2-centerX)/Math.max(1,rowEdge);
+ let score=94-Math.abs(depth-idealDepth)*48-side*26;
+ if(edgeRatio>=.92)score-=12;else if(edgeRatio>=.78)score-=5;
+ const zone=recommendationZone(type,id);
+ if(zone==="best"||zone==="immersion")score=Math.max(score,90);
+ if(zone==="extreme"){
+   const extremeSeats=all.filter(item=>recommendationZone(type,item.id)==="extreme");
+   const extremeCenter=extremeSeats.reduce((sum,item)=>sum+item.left+item.width/2,0)/Math.max(1,extremeSeats.length);
+   const extremeSpan=Math.max(...extremeSeats.map(item=>Math.abs(item.left+item.width/2-extremeCenter)),1);
+   score=Math.max(score,Math.abs(seat.left+seat.width/2-extremeCenter)/extremeSpan>=.82?78:80);
+ }
+ if(zone==="avoid")score=Math.min(score,69);
+ if(zone==="why")score=Math.min(score,79);
+ if(zone!=="best"&&zone!=="immersion")score=Math.min(score,89);
+ score=Math.round(Math.max(10,Math.min(100,score)));
+ const tag={best:"최고의 자리",immersion:"몰입석",extreme:"찐덕후",avoid:"비추천 좌석",why:"WHY IMAX"}[zone]||"일반 좌석";
+ const grade=score>=90?"A":score>=80?"B":score>=70?"C":"D";
+ return {score,grade,tag,rowText:depth<idealDepth-.18?"앞쪽":depth>idealDepth+.22?"후방":"좋은 거리",colText:side<.18?"정중앙":side<.5?"중앙에 가까움":"사이드"};
+}
+function screenRank(type){
+ const width=Number(HALL_DETAILS[type].screen.match(/[\d.]+/)[0]);
+ const uniqueWidths=[...new Set(Object.values(HALL_DETAILS).map(detail=>Number(detail.screen.match(/[\d.]+/)[0])))].sort((a,b)=>b-a);
+ return `전국 IMAX 가로 폭 기준 ${uniqueWidths.indexOf(width)+1}위`;
+}
+function scoreRegional(type,row,num){
+ const zone=regionalZone(type,row+num),base={sweet:100,exp:92,ext:84,why:76}[zone]||70;
+ const rowIndex=REGIONAL[type].rows.indexOf(row),rowCount=REGIONAL[type].rows.length;
+ const central=Math.round(8-Math.abs(num-10.5)*0.8),distance=rowIndex<=2?-8:rowIndex<=4?0:rowIndex<=7?5:1;
+ const score=Math.max(10,Math.min(100,Math.round(base+central+distance)));
+ const tag={sweet:"최고의 자리",exp:"몰입석",ext:"찐덕후",why:"WHY IMAX"}[zone]||"일반 좌석";
+ const grade=score>=90?"A":score>=80?"B":score>=70?"C":"D";
+ const rowText=rowIndex<=2?"앞쪽":rowIndex>=rowCount-2?"후방":"좋은 거리";
+ const colText=Math.abs(num-10.5)<=2?"정중앙":Math.abs(num-10.5)<=6?"중앙에 가까움":"사이드";
+ return {score,grade,tag,rowText,colText};
+}
+function scoreSeat(type,row,num){
+  /*
+   * MDSPOTY 좌석 평가 v5
+   *
+   * 등급 정책
+   * A : 90~100
+   * B : 80~89
+   * C : 70~79
+   * D : 10~69
+   *
+   * 용산 IMAX 기준 목표:
+   * A3 = 10
+   * A23 = 35
+   * I1 = 20
+   * G4 = 35
+   *
+   * 추천표와의 정합성:
+   * - SweetSpot(J,K,L / 11~34): 전부 A
+   * - Experienced(H,I / 13~32): 전부 A
+   * - Extremer(F,G / 16~29): 대부분 B, 일부 C
+   *
+   * ※ 기존 L14=85 목표는 SweetSpot 전체 A 정책과 충돌하므로
+   *   v4에서는 L14를 A등급으로 우선한다.
+   */
+
+  if(type==="yongsan"){
+    // 해외 IMAX 조사 원칙 반영: 좌석 번호가 아니라 실제 좌석 좌표의
+    // 스크린 중앙 이탈량을 사용한다. 통로·좌석 블록 때문에 번호상 중앙과
+    // 실제 시야 중앙이 달라지는 문제를 줄인다.
+    const actualSeat=findSeat(type,row+num);
+    const centerSeat=findSeat(type,"J23");
+    const seatCenter=actualSeat.left+actualSeat.width/2;
+    const screenCenter=centerSeat.left+centerSeat.width/2;
+    const d=Math.abs(seatCenter-screenCenter)/38;
+    const rowSeats=seatsOf(type).filter(item=>item.id.match(/^[A-Z]+/)[0]===row);
+    const rowEdge=Math.max(...rowSeats.map(item=>Math.abs(item.left+item.width/2-screenCenter)));
+    const edgeRatio=d/(rowEdge/38);
+
+    // 행별 기본 점수. 기존보다 전반적으로 관대하게 조정해
+    // 좋은 거리의 일반석도 C/B등급을 받기 쉽게 설계.
+    const rowBase={
+      A:40, B:51, C:62, D:72, E:79,
+      F:85, G:89, H:96, I:99, J:100,
+      K:100, L:100, M:92, N:86, O:77, P:68
+    };
+
+    // 좌우 감점.
+    // 앞쪽일수록 좌우 시야각의 불리함이 상대적으로 커지고,
+    // SweetSpot(J~L)은 감점을 작게 해서 11~34 전체가 A가 되도록 한다.
+    let sideRate;
+    if(row==="J" || row==="K" || row==="L"){
+      sideRate = 0.18;
+    }else if(row==="H" || row==="I"){
+      sideRate = 0.55;
+    }else if(row==="F" || row==="G"){
+      sideRate = 0.70;
+    }else{
+      sideRate = 1.05;
+    }
+
+    let score=rowBase[row] - d*sideRate;
+
+    // 각 행의 실제 끝 좌석은 전방일수록 화면 왜곡·목 회전이 커진다는
+    // 해외 관람 사례를 반영해 강하게 감점한다.
+    if(edgeRatio>=.92) score-=12;
+    else if(edgeRatio>=.78) score-=5;
+
+    // 사용자가 지정한 용산 기준점 보정
+    if(row==="A" && num===3) score=10;
+    if(row==="A" && num===23) score=35;
+    if(row==="I" && num===1) score=20;
+    if(row==="G" && num===4) score=35;
+
+    const isBest=["J","K","L"].includes(row) && num>=11 && num<=34;
+    const isImmersive=["H","I"].includes(row) && num>=13 && num<=32;
+    const isExtreme=["F","G"].includes(row) && num>=16 && num<=29;
+
+    // 추천 구간은 최소 등급을 강제한다.
+    // SweetSpot 전체 A
+    if(isBest){
+      score=Math.max(score,90);
+    }
+
+    // Experienced는 전부 A
+    if(isImmersive){
+      score=Math.max(score,90);
+    }
+
+    // Extremer는 대부분 B, 중앙에서 먼 일부는 C가 가능
+    if(isExtreme){
+      // F는 바깥쪽이 조금 더 불리하고 G는 조금 더 유리하게
+      const minScore=(row==="G" && num>=18 && num<=27)?82:78;
+      score=Math.max(score,minScore);
+    }
+
+    // A등급은 추천표에서 확인된 최고의 자리·몰입석에만 부여한다.
+    if(!isBest&&!isImmersive) score=Math.min(score,89);
+    score=Math.round(Math.max(10,Math.min(100,score)));
+
+    let tag="일반 좌석";
+    if(isBest){
+      tag="최고의 자리";
+    }else if(isImmersive){
+      tag="몰입석";
+    }else if(isExtreme){
+      tag="찐덕후";
+    }
+
+    const grade=score>=90?"A":score>=80?"B":score>=70?"C":"D";
+
+    const rowText=["A","B","C"].includes(row)?"매우 앞쪽":
+      (["G","H","I","J","K","L"].includes(row)?"좋은 거리":"무난한 거리");
+
+    const colText=d<=2?"정중앙":
+      d<=6?"중앙에 가까움":
+      d<=11?"측면에 가까움":"사이드";
+
+    return {score,grade,tag,rowText,colText};
+  }
+
+  // 용산을 제외한 상영관은 PNG 추천 구역의 최고의 자리 좌표를
+  // 기준 거리로 사용한다. 실제 좌석 배치를 유지하면서 지점별 명당을 보장한다.
+  if(window.RECOMMENDATION_ZONES?.[type])return scoreByRecommendations(type,row,num);
+  if(REGIONAL[type]) return scoreRegional(type,row,num);
+  if(OFFICIAL_SEAT_MAPS[type]) return scoreOfficial(type,row,num);
+
+  // 센텀시티 IMAX
+  // 센텀 추천표 반영:
+  // - A~B열: 최후의 용자석(매우 앞쪽) → 강한 감점
+  // - C~D열: 사이드 좌석 → 앞쪽 + 측면 감점
+  // - E 18~28: Extremer → 대부분 B, 일부 C
+  // - F,G 16~30: Experienced → A/B
+  // - H,I 14~32: SweetSpot → 전부 A
+  // - J~L: SweetSpot과 가까운 좋은 거리지만, 중앙에서 멀어질수록 감점
+  const d=Math.abs(num-23);
+
+  const rowBase={
+    A:34, B:43, C:54, D:64,
+    E:79, F:88, G:94, H:100, I:100, J:98, K:94, L:88
+  };
+
+  // 센텀은 스크린과 앞열 사이 거리가 짧고 경사도도 낮아
+  // 앞열의 좌우 시야각 불리함이 크게 느껴지도록 설정.
+  let sideRate;
+  if(["H","I"].includes(row)){
+    sideRate=0.40;
+  }else if(["J","K","L"].includes(row)){
+    sideRate=0.55;
+  }else if(["F","G"].includes(row)){
+    sideRate=0.75;
+  }else if(row==="E"){
+    sideRate=0.95;
+  }else{
+    sideRate=1.30;
+  }
+
+  let score=rowBase[row]-d*sideRate;
+
+  // 좌우 끝자리: 센텀은 화면과 좌석 간 거리가 짧기 때문에
+  // 단순 거리보다 측면 시야각의 불리함을 강하게 반영.
+  if(num<=3 || num>=43) score-=8;
+  else if(num<=6 || num>=40) score-=4;
+
+  // C~D열은 앞쪽이면서 사이드가 특히 불리하므로 추가 감점.
+  if(["C","D"].includes(row) && (num<=8 || num>=38)) score-=8;
+
+  // A~B열은 최후의 용자석: 좌우 위치와 무관하게 낮은 평가.
+  if(["A","B"].includes(row)) score=Math.min(score,59);
+
+  // 추천 구간의 등급 분포를 강제한다.
+  // SweetSpot(H,I 14~32): 전부 A
+  if(["H","I"].includes(row) && num>=14 && num<=32){
+    score=Math.max(score,90);
+  }
+
+  // Experienced(F,G 16~30): A 또는 B
+  if(["F","G"].includes(row) && num>=16 && num<=30){
+    score=Math.max(score,80);
+  }
+
+  // Extremer(E 18~28): 대부분 B, 가장자리 쪽 일부 C 허용
+  if(row==="E" && num>=18 && num<=28){
+    const minScore=(num>=20 && num<=26)?80:74;
+    score=Math.max(score,minScore);
+  }
+
+  score=Math.round(Math.max(10,Math.min(100,score)));
+
+  let tag="일반 좌석";
+  if(["H","I"].includes(row)&&num>=14&&num<=32){
+    tag="최고의 자리";
+  }else if(["F","G"].includes(row)&&num>=16&&num<=30){
+    tag="몰입석";
+  }else if(row==="E"&&num>=18&&num<=28){
+    tag="찐덕후";
+  }else if(["A","B"].includes(row) || (["C","D"].includes(row)&&(num<=8||num>=38))){
+    tag="최후의 용자석";
+  }
+
+  const grade=score>=90?"A":score>=80?"B":score>=70?"C":"D";
+  const rowText=["A","B"].includes(row)?"매우 앞쪽":
+    (["C","D"].includes(row)?"앞쪽":"좋은 거리");
+  const colText=d<=2?"정중앙":
+    d<=6?"중앙에 가까움":
+    d<=11?"측면에 가까움":"사이드";
+
+  return {score,grade,tag,rowText,colText};
+}
+
+function scoreOfficial(type,row,num){
+ const t=THEATERS[type],seat=findSeat(type,row+num),all=seatsOf(type);
+ const left=Math.min(...all.map(item=>item.left)),right=Math.max(...all.map(item=>item.left)),top=Math.min(...all.map(item=>item.top)),bottom=Math.max(...all.map(item=>item.top));
+ const depth=(seat.top-top)/Math.max(1,bottom-top),side=Math.abs(seat.left-(left+right)/2)/Math.max(1,(right-left)/2);
+ const score=Math.round(Math.max(35,Math.min(95,94-Math.abs(depth-.58)*48-side*26)));
+ const grade=score>=90?"A":score>=80?"B":score>=70?"C":"D";
+ const tag=depth<.28?"앞쪽 좌석":depth>.82?"후방 좌석":side<.18?"중앙 좌석":"일반 좌석";
+ return {score,grade,tag,rowText:depth<.28?"앞쪽":depth>.82?"후방":"좋은 거리",colText:side<.18?"정중앙":side<.5?"중앙에 가까움":"사이드"};
+}
+
+function renderMap(type,id){
+ const t=THEATERS[type], canvas=$("mapCanvas"), viewport=$("mapViewport");
+ canvas.innerHTML=""; canvas.style.width=t.width+"px"; canvas.style.height=t.height+"px";
+ const isOfficial=!!OFFICIAL_SEAT_MAPS[type],isRegional=!!REGIONAL[type]&&!isOfficial,screen=document.createElement("div");screen.className="map-screen";screen.style.left=isRegional?"85px":isOfficial?Math.round(t.width*.18)+"px":"280px";screen.style.top="8px";screen.style.width=isRegional?"750px":isOfficial?Math.round(t.width*.64)+"px":"1370px";screen.style.height="35px";canvas.appendChild(screen);
+ $("mapNote").textContent=isOfficial?"공식 CGV 예매 페이지의 실제 좌석 좌표를 반영했습니다. 연한 회색은 우대석입니다.":isRegional?"추천 자료의 좌석 구역을 구조화한 안내 배치도입니다. 색상은 추천 등급, 연한 회색은 휠체어석입니다.":"실제 CGV 좌석 배치의 위치를 기준으로 표시했습니다. 연한 회색은 휠체어석입니다.";
+ // Doors are included only as visual landmarks; seat coordinates themselves come directly from the supplied CGV map data.
+ const doors=OFFICIAL_SEAT_MAPS[type]?.doors||(type==="yongsan"?[{left:665,top:19},{left:1292,top:19}]:[]);
+ doors.forEach(({left,top})=>{const d=document.createElement("div");d.className="door";d.style.left=left+"px";d.style.top=top+"px";d.style.width="38px";d.style.height="19px";canvas.appendChild(d)});
+ const chosen=findSeat(type,id);
+ seatsOf(type).forEach(s=>{
+   const el=document.createElement("div");el.className="seat "+regionalZone(type,s.id);
+   el.textContent=s.id;el.style.left=s.left+"px";el.style.top=s.top+"px";
+   if(s.id===id)el.classList.add("selected");
+   if(s.preferential)el.classList.add("preferential");
+   canvas.appendChild(el);
+ });
+ const scale=Math.min(1,(viewport.clientWidth-2)/t.width);
+ canvas.style.transform=`scale(${scale})`;
+ viewport.style.height=(t.height*scale+2)+"px";
+ setTimeout(()=>{const el=canvas.querySelector(".selected");if(el){const x=el.offsetLeft*scale,y=el.offsetTop*scale;viewport.scrollLeft=Math.max(0,x-viewport.clientWidth/2);}},0);
+}
+function analyze(){
+ const type=$("theater").value, raw=$("seatInput").value.trim().toUpperCase();
+ if(THEATERS[type].infoOnly){showInfoOnly(type);return}
+ const m=raw.match(/^([A-P])(\d{1,2})$/);
+ if(!m){$("seatInput").classList.add("invalid");return}
+ const id=m[1]+(+m[2]); if(!findSeat(type,id)){alert("선택한 상영관에 존재하지 않는 좌석입니다.");return}
+ $("seatInput").classList.remove("invalid");
+ const r=withFactors(scoreSeat(type,m[1],+m[2])),t=THEATERS[type],info=HALL_INFO[type];
+ $("home").classList.add("hidden");$("result").classList.remove("hidden");
+ $("resultTheater").textContent=t.name;$("captureTheater").textContent=t.name;$("resultSeat").textContent=id;
+ $("score").closest(".score-card").style.display="";$("mapViewport").closest(".section").style.display="";
+ $("score").textContent=r.score+"점";$("grade").textContent=r.grade+"등급";$("tag").textContent=r.zone;$("tag").style.display=r.zone==="일반 좌석"?"none":"inline-block";
+ $("hallName").textContent=t.name;$("hallRatio").textContent=HALL_DETAILS[type].ratio;$("hallScreen").textContent=HALL_DETAILS[type].screen;$("hallScreenRank").textContent=screenRank(type);$("hallInfo").textContent=info.text;$("hallRecommend").textContent=info.recommend;
+ $("desc").textContent=r.score>=85?"화면과의 거리와 좌우 위치가 좋아 추천도가 높은 좌석입니다.":r.score>=70?"전체적으로 관람하기 좋은 좌석입니다.":r.score>=50?"관람은 가능하지만 더 좋은 위치의 좌석을 선택할 수 있습니다.":"화면과의 거리 또는 좌우 위치 때문에 추천도가 낮은 좌석입니다.";
+ requestAnimationFrame(()=>renderMap(type,id));
+}
+function showInfoOnly(type){
+ const t=THEATERS[type],info=HALL_INFO[type];
+ $("seatInput").classList.remove("invalid");$("home").classList.add("hidden");$("result").classList.remove("hidden");
+ $("resultTheater").textContent=t.name;$("captureTheater").textContent=t.name;$("resultSeat").textContent="상영관 정보";
+ $("score").closest(".score-card").style.display="none";$("mapViewport").closest(".section").style.display="none";
+ $("hallName").textContent=t.name;$("hallRatio").textContent=HALL_DETAILS[type].ratio;$("hallScreen").textContent=HALL_DETAILS[type].screen;$("hallScreenRank").textContent=screenRank(type);$("hallInfo").textContent="좌석 배치와 추천 구역은 자료 확인 후 추가됩니다.\n"+info.text;$("hallRecommend").textContent=info.recommend;
+}
+async function saveResultImage(){
+ const button=$("saveImage"),capture=$("resultCapture"),width=Math.ceil(capture.offsetWidth),height=Math.ceil(capture.offsetHeight);
+ const clone=capture.cloneNode(true);clone.style.width=width+"px";clone.style.margin="0";
+ const styles=[...document.querySelectorAll("style")].map(style=>style.textContent).join("\n");
+ const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml"><style>${styles}</style>${clone.outerHTML}</div></foreignObject></svg>`;
+ const url=URL.createObjectURL(new Blob([svg],{type:"image/svg+xml;charset=utf-8"}));
+ const image=new Image();button.disabled=true;button.textContent="이미지 만드는 중…";
+ try{
+  await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject;image.src=url});
+  const canvas=document.createElement("canvas"),scale=2;canvas.width=width*scale;canvas.height=height*scale;
+  const context=canvas.getContext("2d");context.scale(scale,scale);context.fillStyle=getComputedStyle(document.body).backgroundColor;context.fillRect(0,0,width,height);context.drawImage(image,0,0);
+  const link=document.createElement("a");link.download=`MDSPOTY-${$("resultTheater").textContent.replace("CGV ","")}-${$("resultSeat").textContent}.png`;link.href=canvas.toDataURL("image/png");link.click();
+ }catch(error){alert("이미지를 저장하지 못했습니다. 다시 시도해주세요.")}finally{URL.revokeObjectURL(url);button.disabled=false;button.textContent="결과 이미지 저장"}
+}
+$("analyze").onclick=analyze;
+$("saveImage").onclick=saveResultImage;
+$("theater").addEventListener("change",e=>{
+ const infoOnly=!!THEATERS[e.target.value].infoOnly;
+ $("seatLabel").textContent=infoOnly?"좌석 배치":"내 좌석";$("seatInput").disabled=infoOnly;$("seatInput").value="";
+ $("seatInput").placeholder=infoOnly?"좌석 배치 자료 수집 중":"예: G15";$("analyze").textContent=infoOnly?"상영관 정보 보기":"좌석 분석하기";
+ $("seatInput").nextElementSibling.textContent=infoOnly?"상영관 사양과 추천 정도를 확인할 수 있어요.":"좌석 번호를 입력해주세요. 예: G15";
+});
+$("seatInput").addEventListener("keydown",e=>{if(e.key==="Enter")analyze()});
+$("back").onclick=$("retry").onclick=()=>{$("result").classList.add("hidden");$("home").classList.remove("hidden");};
+window.addEventListener("resize",()=>{if(!$("result").classList.contains("hidden")){const id=$("resultSeat").textContent;renderMap($("theater").value,id)}});
+</script>
+</body>
+</html>
