@@ -6,7 +6,7 @@ let lastStatus = '';
 const text = key => recipeTranslations[key]?.[language] ?? (language === 'en' ? (english[key] ?? key) : key);
 const waterText = key => text(key).replace(/(\d+(?:\.\d+)?)g\b/g, '$1ml');
 const time = seconds => { const n = Math.max(0, Math.floor(seconds)); return `${Math.floor(n / 60)}:${String(n % 60).padStart(2, '0')}`; };
-const title = s => { const amount = s.endWaterGrams - s.startWaterGrams; const name = waterText(s.name); return amount > 0 && !name.includes(`+${amount}ml`) ? `${name} +${amount}ml` : name; };
+const title = s => waterText(s.name).replace(/\s*\+\d+(?:\.\d+)?(?:ml|g)\b/g, '').trim();
 function adjacent(id, step, empty) {
   const el = $(id); el.replaceChildren();
   const name = document.createElement('span'); name.textContent = step ? title(step) : text(empty); el.append(name);
