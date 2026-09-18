@@ -1,0 +1,628 @@
+{
+  "version": 1,
+  "translations": {
+    "V60 기본 3-Pour": {
+      "en": "V60 Basic 3-Pour",
+      "ko": "V60 기본 3-Pour"
+    },
+    "Hario V60": {
+      "en": "Hario V60",
+      "ko": "Hario V60"
+    },
+    "중간보다 살짝 고운 분쇄": {
+      "en": "Medium-fine Grind",
+      "ko": "중간보다 살짝 고운 분쇄"
+    },
+    "뜸들이기": {
+      "ko": "뜸들이기",
+      "en": "Bloom"
+    },
+    "1차 물 붓기": {
+      "ko": "1차 물 붓기",
+      "en": "Pour 1"
+    },
+    "2차 물 붓기": {
+      "ko": "2차 물 붓기",
+      "en": "Pour 2"
+    },
+    "드로다운 대기": {
+      "ko": "드로다운 대기",
+      "en": "Drawdown"
+    },
+    "James Hoffmann V60": {
+      "en": "James Hoffmann V60",
+      "ko": "James Hoffmann V60"
+    },
+    "중간보다 고운 분쇄": {
+      "en": "Fine-medium Grind",
+      "ko": "중간보다 고운 분쇄"
+    },
+    "스월 후 드로다운 대기": {
+      "ko": "스월 후 드로다운 대기",
+      "en": "Swirl & Drawdown"
+    },
+    "Tetsu Kasuya 4:6": {
+      "en": "Tetsu Kasuya 4:6",
+      "ko": "Tetsu Kasuya 4:6"
+    },
+    "중간보다 굵은 분쇄": {
+      "en": "Medium-coarse Grind",
+      "ko": "중간보다 굵은 분쇄"
+    },
+    "3차 물 붓기": {
+      "ko": "3차 물 붓기",
+      "en": "Pour 3"
+    },
+    "4차 물 붓기": {
+      "ko": "4차 물 붓기",
+      "en": "Pour 4"
+    },
+    "5차 물 붓기": {
+      "ko": "5차 물 붓기",
+      "en": "Pour 5"
+    },
+    "Tetsu Kasuya 4:6 산미형": {
+      "en": "Tetsu Kasuya 4:6 Bright",
+      "ko": "Tetsu Kasuya 4:6 산미형"
+    },
+    "프렌치프레스 수준의 굵은 분쇄 · 전반부를 70g/50g으로 나눠 산미 강조": {
+      "en": "French Press Grind · First Two Pours: 70g / 50g for Acidity",
+      "ko": "프렌치프레스 수준의 굵은 분쇄 · 전반부를 70g/50g으로 나눠 산미 강조"
+    },
+    "맛 조절 1차": {
+      "ko": "맛 조절 1차",
+      "en": "Flavor Pour 1"
+    },
+    "맛 조절 2차": {
+      "ko": "맛 조절 2차",
+      "en": "Flavor Pour 2"
+    },
+    "농도 조절 1차": {
+      "ko": "농도 조절 1차",
+      "en": "Strength Pour 1"
+    },
+    "농도 조절 2차": {
+      "ko": "농도 조절 2차",
+      "en": "Strength Pour 2"
+    },
+    "농도 조절 3차": {
+      "ko": "농도 조절 3차",
+      "en": "Strength Pour 3"
+    },
+    "Tetsu Kasuya 4:6 단맛형": {
+      "en": "Tetsu Kasuya 4:6 Sweet",
+      "ko": "Tetsu Kasuya 4:6 단맛형"
+    },
+    "프렌치프레스 수준의 굵은 분쇄 · 전반부를 50g/70g으로 나눠 단맛과 바디 강조": {
+      "en": "French Press Grind · First Two Pours: 50g / 70g for Sweetness & Body",
+      "ko": "프렌치프레스 수준의 굵은 분쇄 · 전반부를 50g/70g으로 나눠 단맛과 바디 강조"
+    },
+    "Coffee Collective 원푸어": {
+      "en": "Coffee Collective Single Pour",
+      "ko": "Coffee Collective 원푸어"
+    },
+    "Kalita Wave": {
+      "en": "Kalita Wave",
+      "ko": "Kalita Wave"
+    },
+    "중간 분쇄 · 필터 린싱 후 32g 뜸, 나선형으로 한 번에 이어 붓기": {
+      "en": "Medium Grind · Rinse Filter, Bloom with 32g, then One Continuous Spiral Pour",
+      "ko": "중간 분쇄 · 필터 린싱 후 32g 뜸, 나선형으로 한 번에 이어 붓기"
+    },
+    "사전 적심": {
+      "ko": "사전 적심",
+      "en": "Pre-infusion"
+    },
+    "원푸어": {
+      "ko": "원푸어",
+      "en": "Single Pour"
+    },
+    "정인성 484": {
+      "en": "Waterboy 484",
+      "ko": "정인성 484"
+    },
+    "범용 · 포켓형 권장": {
+      "en": "Universal · Pocket Brewer Recommended",
+      "ko": "범용 · 포켓형 권장"
+    },
+    "고온수 권장 · 추출수 160g의 드로다운이 끝나면 물 140g을 가수": {
+      "en": "Hot Water · After 160g Drawdown, Bypass with 140g Water",
+      "ko": "고온수 권장 · 추출수 160g의 드로다운이 끝나면 물 140g을 가수"
+    },
+    "다음 물 붓기 대기": {
+      "ko": "다음 물 붓기 대기",
+      "en": "Wait for Next Pour"
+    },
+    "드로다운 확인": {
+      "ko": "드로다운 확인",
+      "en": "Check Drawdown"
+    },
+    "가수": {
+      "ko": "가수",
+      "en": "Bypass"
+    },
+    "정인성 4666": {
+      "en": "Waterboy 4666",
+      "ko": "정인성 4666"
+    },
+    "고온수 권장 · 추출수 220g의 드로다운이 끝나면 물 80g을 가수": {
+      "en": "Hot Water · After 220g Drawdown, Bypass with 80g Water",
+      "ko": "고온수 권장 · 추출수 220g의 드로다운이 끝나면 물 80g을 가수"
+    }
+  },
+  "recipes": [
+    {
+      "id": "9012BEA2-2C31-40B7-9D56-FC342876E8B1",
+      "name": "V60 기본 3-Pour",
+      "brewer": "Hario V60",
+      "grindNote": "중간보다 살짝 고운 분쇄",
+      "coffeeGrams": 20,
+      "waterGrams": 300,
+      "waterTemperature": 93,
+      "targetSeconds": 180,
+      "steps": [
+        {
+          "name": "뜸들이기",
+          "startSeconds": 0,
+          "endSeconds": 30,
+          "startWaterGrams": 0,
+          "endWaterGrams": 40,
+          "manualAdvance": false,
+          "id": "FF7616DA-595A-5AE6-99E5-DED4889399D4"
+        },
+        {
+          "name": "1차 물 붓기",
+          "startSeconds": 30,
+          "endSeconds": 60,
+          "startWaterGrams": 40,
+          "endWaterGrams": 150,
+          "manualAdvance": false,
+          "id": "EBE81E40-0317-5378-8727-B725303B78BD"
+        },
+        {
+          "name": "2차 물 붓기",
+          "startSeconds": 60,
+          "endSeconds": 90,
+          "startWaterGrams": 150,
+          "endWaterGrams": 300,
+          "manualAdvance": false,
+          "id": "9E329F5E-A51F-5A7D-B4DC-E6E96DDDEB7F"
+        },
+        {
+          "name": "드로다운 대기",
+          "startSeconds": 90,
+          "endSeconds": 180,
+          "startWaterGrams": 300,
+          "endWaterGrams": 300,
+          "manualAdvance": false,
+          "id": "6101412F-3306-551F-8C6F-9EFD0A0C8756"
+        }
+      ],
+      "isBuiltIn": true
+    },
+    {
+      "id": "7D34A7CF-7BB3-4AC7-BD96-7013D8E625CA",
+      "name": "James Hoffmann V60",
+      "brewer": "Hario V60",
+      "grindNote": "중간보다 고운 분쇄",
+      "coffeeGrams": 30,
+      "waterGrams": 500,
+      "waterTemperature": 96,
+      "targetSeconds": 210,
+      "steps": [
+        {
+          "name": "뜸들이기",
+          "startSeconds": 0,
+          "endSeconds": 45,
+          "startWaterGrams": 0,
+          "endWaterGrams": 60,
+          "manualAdvance": false,
+          "id": "4DE4E02E-F83E-57AF-84E4-C605F3A2AF4E"
+        },
+        {
+          "name": "1차 물 붓기",
+          "startSeconds": 45,
+          "endSeconds": 75,
+          "startWaterGrams": 60,
+          "endWaterGrams": 300,
+          "manualAdvance": false,
+          "id": "2C153A83-9DD0-599E-B21A-BF1DA2A98620"
+        },
+        {
+          "name": "2차 물 붓기",
+          "startSeconds": 75,
+          "endSeconds": 105,
+          "startWaterGrams": 300,
+          "endWaterGrams": 500,
+          "manualAdvance": false,
+          "id": "D76FA48B-3F98-5BE4-BB5D-CA3CA3BEE1E3"
+        },
+        {
+          "name": "스월 후 드로다운 대기",
+          "startSeconds": 105,
+          "endSeconds": 210,
+          "startWaterGrams": 500,
+          "endWaterGrams": 500,
+          "manualAdvance": false,
+          "id": "BFAD7D79-456C-5DD7-9B79-98871C46E223"
+        }
+      ],
+      "isBuiltIn": true
+    },
+    {
+      "id": "1E2B8B1F-1F76-46D8-90D6-4380A35FCDA2",
+      "name": "Tetsu Kasuya 4:6",
+      "brewer": "Hario V60",
+      "grindNote": "중간보다 굵은 분쇄",
+      "coffeeGrams": 20,
+      "waterGrams": 300,
+      "waterTemperature": 92,
+      "targetSeconds": 210,
+      "steps": [
+        {
+          "name": "1차 물 붓기",
+          "startSeconds": 0,
+          "endSeconds": 45,
+          "startWaterGrams": 0,
+          "endWaterGrams": 60,
+          "manualAdvance": false,
+          "id": "8B18157C-39F3-5E11-BA72-F2248F406AEC"
+        },
+        {
+          "name": "2차 물 붓기",
+          "startSeconds": 45,
+          "endSeconds": 90,
+          "startWaterGrams": 60,
+          "endWaterGrams": 120,
+          "manualAdvance": false,
+          "id": "7DFF643B-347F-5DCB-BD19-283F334CC104"
+        },
+        {
+          "name": "3차 물 붓기",
+          "startSeconds": 90,
+          "endSeconds": 130,
+          "startWaterGrams": 120,
+          "endWaterGrams": 180,
+          "manualAdvance": false,
+          "id": "714B5973-5232-519F-84F1-1EE1EE6664B5"
+        },
+        {
+          "name": "4차 물 붓기",
+          "startSeconds": 130,
+          "endSeconds": 170,
+          "startWaterGrams": 180,
+          "endWaterGrams": 240,
+          "manualAdvance": false,
+          "id": "B686DCBE-6DE3-50CB-BD3D-DAEFBEDC1C30"
+        },
+        {
+          "name": "5차 물 붓기",
+          "startSeconds": 170,
+          "endSeconds": 210,
+          "startWaterGrams": 240,
+          "endWaterGrams": 300,
+          "manualAdvance": false,
+          "id": "EF8C0E6C-E8BD-5B04-AAA1-9732949F6862"
+        }
+      ],
+      "isBuiltIn": true
+    },
+    {
+      "id": "BF0438EA-46D9-4E22-B704-C0544A6F0F17",
+      "name": "Tetsu Kasuya 4:6 산미형",
+      "brewer": "Hario V60",
+      "grindNote": "프렌치프레스 수준의 굵은 분쇄 · 전반부를 70g/50g으로 나눠 산미 강조",
+      "coffeeGrams": 20,
+      "waterGrams": 300,
+      "waterTemperature": 92,
+      "targetSeconds": 210,
+      "steps": [
+        {
+          "name": "맛 조절 1차",
+          "startSeconds": 0,
+          "endSeconds": 45,
+          "startWaterGrams": 0,
+          "endWaterGrams": 70,
+          "manualAdvance": false,
+          "id": "00711EDE-EC05-56A9-9A2E-E5D485B4CA27"
+        },
+        {
+          "name": "맛 조절 2차",
+          "startSeconds": 45,
+          "endSeconds": 90,
+          "startWaterGrams": 70,
+          "endWaterGrams": 120,
+          "manualAdvance": false,
+          "id": "D7CC1615-779A-5607-B0E9-072160F98FE2"
+        },
+        {
+          "name": "농도 조절 1차",
+          "startSeconds": 90,
+          "endSeconds": 130,
+          "startWaterGrams": 120,
+          "endWaterGrams": 180,
+          "manualAdvance": false,
+          "id": "8AF9C2E2-418B-508E-A48F-FCE51DA9200C"
+        },
+        {
+          "name": "농도 조절 2차",
+          "startSeconds": 130,
+          "endSeconds": 170,
+          "startWaterGrams": 180,
+          "endWaterGrams": 240,
+          "manualAdvance": false,
+          "id": "8B511DB0-90BF-51A4-8357-8DD7A39CE4F2"
+        },
+        {
+          "name": "농도 조절 3차",
+          "startSeconds": 170,
+          "endSeconds": 210,
+          "startWaterGrams": 240,
+          "endWaterGrams": 300,
+          "manualAdvance": false,
+          "id": "BE926F4F-E26F-52A8-9A08-0F16629EFF30"
+        }
+      ],
+      "isBuiltIn": true
+    },
+    {
+      "id": "2939E3D3-15BE-487F-B3E0-61C8F571D3AD",
+      "name": "Tetsu Kasuya 4:6 단맛형",
+      "brewer": "Hario V60",
+      "grindNote": "프렌치프레스 수준의 굵은 분쇄 · 전반부를 50g/70g으로 나눠 단맛과 바디 강조",
+      "coffeeGrams": 20,
+      "waterGrams": 300,
+      "waterTemperature": 92,
+      "targetSeconds": 210,
+      "steps": [
+        {
+          "name": "맛 조절 1차",
+          "startSeconds": 0,
+          "endSeconds": 45,
+          "startWaterGrams": 0,
+          "endWaterGrams": 50,
+          "manualAdvance": false,
+          "id": "0F525A60-34D7-59A7-9E41-82002AF0F188"
+        },
+        {
+          "name": "맛 조절 2차",
+          "startSeconds": 45,
+          "endSeconds": 90,
+          "startWaterGrams": 50,
+          "endWaterGrams": 120,
+          "manualAdvance": false,
+          "id": "E2DC39A5-5C97-55B8-9BA9-3CB0B3473A94"
+        },
+        {
+          "name": "농도 조절 1차",
+          "startSeconds": 90,
+          "endSeconds": 130,
+          "startWaterGrams": 120,
+          "endWaterGrams": 180,
+          "manualAdvance": false,
+          "id": "7485A73F-0132-52DF-8F74-27BD66C990DE"
+        },
+        {
+          "name": "농도 조절 2차",
+          "startSeconds": 130,
+          "endSeconds": 170,
+          "startWaterGrams": 180,
+          "endWaterGrams": 240,
+          "manualAdvance": false,
+          "id": "4376DC9C-756C-506A-8EAA-4C7E49AA47EE"
+        },
+        {
+          "name": "농도 조절 3차",
+          "startSeconds": 170,
+          "endSeconds": 210,
+          "startWaterGrams": 240,
+          "endWaterGrams": 300,
+          "manualAdvance": false,
+          "id": "9F3CF960-56F8-52CC-AFF0-2E33C5BA0927"
+        }
+      ],
+      "isBuiltIn": true
+    },
+    {
+      "id": "B643B84C-F134-4E0D-B935-397E34C36D64",
+      "name": "Coffee Collective 원푸어",
+      "brewer": "Kalita Wave",
+      "grindNote": "중간 분쇄 · 필터 린싱 후 32g 뜸, 나선형으로 한 번에 이어 붓기",
+      "coffeeGrams": 16,
+      "waterGrams": 250,
+      "waterTemperature": 94,
+      "targetSeconds": 105,
+      "steps": [
+        {
+          "name": "사전 적심",
+          "startSeconds": 0,
+          "endSeconds": 30,
+          "startWaterGrams": 0,
+          "endWaterGrams": 32,
+          "manualAdvance": false,
+          "id": "10F47590-F7D5-52B9-AEBE-B8FA41876B94"
+        },
+        {
+          "name": "원푸어",
+          "startSeconds": 30,
+          "endSeconds": 105,
+          "startWaterGrams": 32,
+          "endWaterGrams": 250,
+          "manualAdvance": false,
+          "id": "D0C948AF-3E74-5C77-94D8-DB91AD068255"
+        }
+      ],
+      "isBuiltIn": true
+    },
+    {
+      "id": "05A728BF-E544-4F4C-937C-7DFEC63E910D",
+      "name": "정인성 484",
+      "brewer": "범용 · 포켓형 권장",
+      "grindNote": "고온수 권장 · 추출수 160g의 드로다운이 끝나면 물 140g을 가수",
+      "coffeeGrams": 20,
+      "waterGrams": 300,
+      "waterTemperature": 96,
+      "targetSeconds": 146,
+      "steps": [
+        {
+          "name": "사전 적심",
+          "startSeconds": 0,
+          "endSeconds": 10,
+          "startWaterGrams": 0,
+          "endWaterGrams": 40,
+          "manualAdvance": false,
+          "id": "18CEBBF3-FCC1-51B2-A55E-6FA1C110A7AF"
+        },
+        {
+          "name": "뜸들이기",
+          "startSeconds": 10,
+          "endSeconds": 60,
+          "startWaterGrams": 40,
+          "endWaterGrams": 40,
+          "manualAdvance": false,
+          "id": "4B2D0E8F-C973-59CE-AD93-83521AD7F21D"
+        },
+        {
+          "name": "2차 물 붓기",
+          "startSeconds": 60,
+          "endSeconds": 75,
+          "startWaterGrams": 40,
+          "endWaterGrams": 120,
+          "manualAdvance": false,
+          "id": "7C76AE51-E832-5FBD-A432-3B0C0211A2A7"
+        },
+        {
+          "name": "다음 물 붓기 대기",
+          "startSeconds": 75,
+          "endSeconds": 120,
+          "startWaterGrams": 120,
+          "endWaterGrams": 120,
+          "manualAdvance": false,
+          "id": "315DBD3A-D362-5F5E-B8B6-E0A816C451AB"
+        },
+        {
+          "name": "3차 물 붓기",
+          "startSeconds": 120,
+          "endSeconds": 130,
+          "startWaterGrams": 120,
+          "endWaterGrams": 160,
+          "manualAdvance": false,
+          "id": "00250125-D71B-58EA-B6B0-9BAC973DD2A6"
+        },
+        {
+          "name": "드로다운 확인",
+          "startSeconds": 130,
+          "endSeconds": 131,
+          "startWaterGrams": 160,
+          "endWaterGrams": 160,
+          "manualAdvance": true,
+          "id": "6CA32D88-B74B-5FF8-99EC-EDCD691AFB63"
+        },
+        {
+          "name": "가수",
+          "startSeconds": 131,
+          "endSeconds": 146,
+          "startWaterGrams": 160,
+          "endWaterGrams": 300,
+          "manualAdvance": false,
+          "id": "AF5909CF-9CBF-55CE-BD1B-40E1F658AA0E"
+        }
+      ],
+      "isBuiltIn": true
+    },
+    {
+      "id": "9E44F3AC-52C9-4FDA-A05F-536A395C4E13",
+      "name": "정인성 4666",
+      "brewer": "범용 · 포켓형 권장",
+      "grindNote": "고온수 권장 · 추출수 220g의 드로다운이 끝나면 물 80g을 가수",
+      "coffeeGrams": 20,
+      "waterGrams": 300,
+      "waterTemperature": 96,
+      "targetSeconds": 116,
+      "steps": [
+        {
+          "name": "사전 적심",
+          "startSeconds": 0,
+          "endSeconds": 10,
+          "startWaterGrams": 0,
+          "endWaterGrams": 40,
+          "manualAdvance": false,
+          "id": "C9688890-1DE4-541D-AAC7-92097B8EB2D1"
+        },
+        {
+          "name": "뜸들이기",
+          "startSeconds": 10,
+          "endSeconds": 30,
+          "startWaterGrams": 40,
+          "endWaterGrams": 40,
+          "manualAdvance": false,
+          "id": "51962ABF-14F6-5B85-BB0B-BF94E5DF3BC0"
+        },
+        {
+          "name": "2차 물 붓기",
+          "startSeconds": 30,
+          "endSeconds": 40,
+          "startWaterGrams": 40,
+          "endWaterGrams": 100,
+          "manualAdvance": false,
+          "id": "53D8B7B2-43B5-5D7E-B014-CA965DA3D6D5"
+        },
+        {
+          "name": "다음 물 붓기 대기",
+          "startSeconds": 40,
+          "endSeconds": 60,
+          "startWaterGrams": 100,
+          "endWaterGrams": 100,
+          "manualAdvance": false,
+          "id": "F54DEBF0-10ED-5070-A8D6-2E04403F1152"
+        },
+        {
+          "name": "3차 물 붓기",
+          "startSeconds": 60,
+          "endSeconds": 70,
+          "startWaterGrams": 100,
+          "endWaterGrams": 160,
+          "manualAdvance": false,
+          "id": "3AC81C14-6E68-5B34-B24B-E47F8A4BE3E6"
+        },
+        {
+          "name": "다음 물 붓기 대기",
+          "startSeconds": 70,
+          "endSeconds": 90,
+          "startWaterGrams": 160,
+          "endWaterGrams": 160,
+          "manualAdvance": false,
+          "id": "BEAF62EA-F4C9-5CD8-B533-E15055424FEB"
+        },
+        {
+          "name": "4차 물 붓기",
+          "startSeconds": 90,
+          "endSeconds": 100,
+          "startWaterGrams": 160,
+          "endWaterGrams": 220,
+          "manualAdvance": false,
+          "id": "67D4AE64-EA86-576D-9CE6-5280C8790A47"
+        },
+        {
+          "name": "드로다운 확인",
+          "startSeconds": 100,
+          "endSeconds": 101,
+          "startWaterGrams": 220,
+          "endWaterGrams": 220,
+          "manualAdvance": true,
+          "id": "C3FCC9A9-94C3-5D76-B35C-DE9C6D21B5D9"
+        },
+        {
+          "name": "가수",
+          "startSeconds": 101,
+          "endSeconds": 116,
+          "startWaterGrams": 220,
+          "endWaterGrams": 300,
+          "manualAdvance": false,
+          "id": "2CF5FC67-4794-5BC8-AD10-6B7083972D84"
+        }
+      ],
+      "isBuiltIn": true
+    }
+  ]
+}

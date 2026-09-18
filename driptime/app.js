@@ -1,9 +1,9 @@
 const $ = id => document.getElementById(id);
 const timer = new BrewTimer();
 let language = 'ko';
-let selected = recipes[0];
+let selected;
 let lastStatus = '';
-const text = key => language === 'en' ? (english[key] ?? key) : key;
+const text = key => recipeTranslations[key]?.[language] ?? (language === 'en' ? (english[key] ?? key) : key);
 const time = seconds => { const n = Math.max(0, Math.floor(seconds)); return `${Math.floor(n / 60)}:${String(n % 60).padStart(2, '0')}`; };
 const title = s => { const amount = s.endWaterGrams - s.startWaterGrams; const name = text(s.name); return amount > 0 && !name.includes(`+${amount}g`) ? `${name} +${amount}g` : name; };
 function adjacent(id, step, empty) {
@@ -30,6 +30,7 @@ function renderRecipe() {
   lastStatus = ''; render();
 }
 function render() {
+  if (!selected) return;
   const index = timer.index(selected), step = selected.steps[index], elapsed = timer.stepElapsed(selected);
   const duration = step.endSeconds - step.startSeconds, water = timer.water(selected), amount = step.endWaterGrams - step.startWaterGrams;
   $('current').textContent = timer.complete ? text('완료') : title(step);
@@ -50,11 +51,43 @@ function render() {
   const status = timer.complete ? (language === 'ko' ? '추출이 완료되었습니다.' : 'Brew complete.') : timer.waiting ? (language === 'ko' ? '물이 모두 빠지면 다음 단계 버튼을 눌러 주세요.' : 'When drawdown finishes, press Next Step.') : timer.recipe && !timer.running ? (language === 'ko' ? '일시정지됨' : 'Paused') : '';
   if (lastStatus !== status) { $('status').textContent = status; lastStatus = status; }
 }
-$('toggle').addEventListener('click', () => { timer.running ? timer.pause() : timer.start(selected); render(); });
-$('reset').addEventListener('click', () => { timer.reset(); render(); });
+$('toggle').addEventListener('click', () => { if (!selected) return; timer.running ? timer.pause() : timer.start(selected); render(); });
+$('reset').addEventListener('click', () => { if (selected) { timer.reset(); render(); } });
 $('advance').addEventListener('click', () => { timer.advance(); render(); });
-$('recipe').addEventListener('change', () => { if (timer.recipe) return; selected = recipes.find(r => r.id === $('recipe').value) ?? recipes[0]; timer.reset(); renderRecipe(); });
-$('language').addEventListener('change', () => { language = $('language').value; renderRecipe(); });
+$('recipe').addEventListener('change', () => { if (!selected || timer.recipe) return; selected = recipes.find(r => r.id === $('recipe').value) ?? recipes[0]; timer.reset(); renderRecipe(); });
+$('language').addEventListener('change', () => { language = $('language').value; if (selected) renderRecipe(); });
 setInterval(() => { if (timer.running) { timer.tick(); render(); } }, 100);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) { timer.tick(); render(); } });
-renderRecipe();
+async function loadRecipes() {
+  $('toggle').disabled = true;
+  $('recipe').disabled = true;
+  try {
+    const response = await fetch('recipes.json', {cache: 'no-cache'});
+    if (!response.ok) throw new Error('Recipe file unavailable');
+    const catalog = await response.json();
+    validateCatalog(catalog);
+    recipes = catalog.recipes;
+    recipeTranslations = catalog.translations;
+    selected = recipes[0];
+    renderRecipe();
+  } catch (error) {
+    $('status').textContent = '레시피 파일을 읽을 수 없습니다. 새로고침해 주세요. / Unable to load recipes.';
+    console.error(error);
+  }
+}
+function validateCatalog(catalog) {
+  const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (catalog.version !== 1 || !catalog.translations || !Array.isArray(catalog.recipes) || !catalog.recipes.length) throw new Error('Invalid catalog');
+  const ids = new Set();
+  for (const r of catalog.recipes) {
+    if (!uuid.test(r.id) || ids.has(r.id) || r.isBuiltIn !== true || !r.name || !Number.isFinite(r.coffeeGrams) || r.coffeeGrams <= 0 || !Number.isFinite(r.waterGrams) || r.waterGrams <= 0 || !Number.isInteger(r.targetSeconds) || !r.steps?.length) throw new Error('Invalid recipe');
+    ids.add(r.id);
+    let seconds = 0, water = 0; const steps = new Set();
+    for (const step of r.steps) {
+      if (!uuid.test(step.id) || steps.has(step.id) || !step.name || !Number.isInteger(step.startSeconds) || !Number.isInteger(step.endSeconds) || step.startSeconds !== seconds || step.endSeconds <= seconds || step.startWaterGrams !== water || !Number.isFinite(step.endWaterGrams) || step.endWaterGrams < water || step.endWaterGrams > r.waterGrams) throw new Error('Invalid step');
+      steps.add(step.id); seconds = step.endSeconds; water = step.endWaterGrams;
+    }
+    if (seconds !== r.targetSeconds || water !== r.waterGrams) throw new Error('Invalid recipe target');
+  }
+}
+loadRecipes();
