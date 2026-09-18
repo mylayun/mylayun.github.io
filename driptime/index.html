@@ -1,43 +1,6 @@
 <!doctype html>
-<html lang="ko">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#2F6B5F">
-<meta name="description" content="8가지 핸드드립 레시피와 단계별 물 양을 안내하는 Drip Timer.">
-<title>Drip Timer · MYLA</title>
-<link rel="stylesheet" href="style.css?v=step-layout-1">
-<script defer src="recipes.js?v=shared-json-1"></script>
-<script defer src="timer.js"></script>
-<script defer src="app.js?v=clean-step-titles-1"></script>
-</head>
-<body>
-<header><a href="/" aria-label="MYLA 메인페이지">← MYLA</a><h1>Drip Timer</h1><select id="language" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option></select></header>
-<main>
-<section class="card timer-card" aria-label="타이머">
-<div class="adjacent"><span data-label="이전 단계"></span><div id="previous"></div></div>
-<hr class="step-divider">
-<div class="current-label" id="current-label"></div>
-<div class="current-step-layout">
-<div class="step-name"><h2 id="current" aria-live="polite"></h2><span id="pour-amount"></span><span id="completed" hidden>✓</span></div>
-<div class="dial">
-<svg viewBox="0 0 250 250" aria-hidden="true"><circle class="track" cx="125" cy="125" r="115"/><circle id="ring" cx="125" cy="125" r="115"/></svg>
-<div class="dial-content"><strong id="water"></strong><span id="step-time"></span></div>
-</div>
-<div class="step-targets"><span id="target-time-label"></span><strong id="target-time"></strong><span id="cumulative-label"></span><strong id="water-total"></strong></div>
-</div>
-<hr class="step-divider">
-<div class="adjacent"><span data-label="다음 단계"></span><div id="next"></div></div>
-<button id="advance" class="primary" hidden></button>
-<p id="total" class="total"></p>
-<progress id="progress" max="1" value="0" aria-label="전체 진행률"></progress>
-<div class="controls"><button id="toggle" class="primary"></button><button id="reset" data-label="초기화"></button></div>
-<p id="status" class="status" role="status"></p>
-</section>
-<section class="card"><label for="recipe" class="section-title" data-label="오늘의 레시피"></label><select id="recipe"></select><p id="metadata" class="metadata"></p><p id="grind" class="note"></p><p id="locked" class="note" hidden></p></section>
-<section class="card"><h2 class="section-title" data-label="레시피 상세"></h2><ol id="steps"></ol></section>
-<noscript>타이머를 사용하려면 JavaScript를 활성화해 주세요.</noscript>
-</main>
-<footer>MYLA · Drip Timer</footer>
-</body>
-</html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#2F6B5F"><meta name="description" content="원두 양에 맞춘 단계별 핸드드립 타이머"><title>Drip Timer · MYLA</title><link rel="stylesheet" href="style.css?v=cards-2"><script defer src="recipes.js?v=shared-json-1"></script><script defer src="timer.js?v=cards-2"></script><script defer src="scale.js?v=cards-2"></script><script defer src="app.js?v=cards-2"></script></head>
+<body><header><a href="/">← MYLA</a><h1>Drip Timer</h1><select id="language" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option></select></header>
+<div class="control-dock"><label for="recipe" class="section-title" data-label="오늘의 레시피"></label><select id="recipe" disabled></select><div class="controls"><button id="toggle" class="primary" disabled></button><button id="reset" disabled></button><button id="advance" class="primary" hidden></button></div><p id="total"></p><progress id="progress" max="1" value="0"></progress><p id="status" role="status"></p><button id="return-current" hidden></button></div><main><section class="card"><div class="dose-row"><label for="dose" id="dose-label"></label><div class="dose-controls"><button id="less" aria-label="원두 1g 줄이기">−</button><input id="dose" type="number" min="5" max="60" step="1" value="20" disabled><span>g</span><button id="more" aria-label="원두 1g 늘리기">+</button></div></div><p id="metadata" class="metadata"></p><p id="grind" class="note"></p><p id="dose-note" class="note"></p><p id="locked" class="note" hidden></p></section>
+<section aria-labelledby="steps-title"><h2 id="steps-title" class="section-title" data-label="레시피 상세"></h2><ol id="steps"></ol></section><noscript>JavaScript를 활성화해 주세요.</noscript></main>
+<footer>MYLA · Drip Timer</footer></body></html>

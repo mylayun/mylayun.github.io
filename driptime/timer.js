@@ -41,6 +41,7 @@ class BrewTimer {
     this.waitTotal += Math.max(this.elapsed - this.waitStarted, 0);
     this.skipped += s.endSeconds - s.startSeconds;
     this.timeline = s.endSeconds; this.waiting = false; this.manualIndex = null;
+    if (this.timeline >= this.recipe.targetSeconds) { this.finishPause(); this.complete = true; }
   }
   index(recipe) {
     if (this.manualIndex !== null) return this.manualIndex;
