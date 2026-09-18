@@ -34,13 +34,15 @@ function render() {
   if (!selected) return;
   const index = timer.index(selected), step = selected.steps[index], elapsed = timer.stepElapsed(selected);
   const duration = step.endSeconds - step.startSeconds, water = timer.water(selected), amount = step.endWaterGrams - step.startWaterGrams;
-  $('current').textContent = timer.complete ? text('완료') : title(step);
+  $('current').textContent = timer.complete ? text('완료') : waterText(step.name);
   $('current-label').textContent = language === 'ko' ? '현재 단계' : 'Current Step';
   $('cumulative-label').textContent = language === 'ko' ? '누적 목표' : 'Total Target';
   $('water').textContent = `${Math.round(water)}ml`;
-  $('water-total').textContent = `/ ${step.endWaterGrams}ml`;
+  $('water-total').textContent = `${step.endWaterGrams}ml`;
+  $('target-time-label').textContent = language === 'ko' ? '목표 시간' : 'Target Time';
+  $('target-time').textContent = step.manualAdvance ? text('직접 확인') : time(duration);
   $('pour-amount').textContent = amount > 0 ? `${language === 'ko' ? '이 단계에서' : 'This Step'} +${amount}ml` : text('물 붓기 없음');
-  $('step-time').textContent = `${time(elapsed)} / ${step.manualAdvance ? text('직접 확인') : time(duration)}`;
+  $('step-time').textContent = time(elapsed);
   $('ring').style.strokeDashoffset = 722.567 * (1 - (step.manualAdvance ? 1 : Math.min(elapsed / duration, 1)));
   $('completed').hidden = !timer.complete;
   adjacent('previous', selected.steps[index - 1], '첫 단계입니다'); adjacent('next', selected.steps[index + 1], '마지막 단계입니다');
