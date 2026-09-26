@@ -25,7 +25,9 @@ function renderRecipe() {
   $('locked').textContent = say('추출 중에는 레시피와 원두 양을 바꿀 수 없습니다. 초기화 후 변경하세요.','Reset before changing the recipe or coffee dose.');
   $('return-current').textContent = say('현재 단계로 돌아가기','Return to Current Step');
   $('reset').textContent = text('초기화');
+  $('progress-title').textContent=say('진행 상태','Progress');
   $('progress').setAttribute('aria-label',say('전체 진행률','Overall progress'));
+  $('progress-end').textContent=time(selected.targetSeconds);
   cards = selected.steps.map((s,i) => {
     const row=make('li','step-card'),heading=make('div','step-heading'),badge=make('span','step-badge',String(i+1)),name=make('h3','',title(s));heading.append(badge,name);
     const amount=s.endWaterGrams-s.startWaterGrams;
