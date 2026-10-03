@@ -45,7 +45,11 @@ class BrewTimer {
   }
   index(recipe) {
     if (this.manualIndex !== null) return this.manualIndex;
-    return Math.max(0, recipe.steps.findLastIndex(s => this.timeline >= s.startSeconds));
+    // Keep the timer working on older mobile browsers without findLastIndex.
+    for (let i = recipe.steps.length - 1; i >= 0; i -= 1) {
+      if (this.timeline >= recipe.steps[i].startSeconds) return i;
+    }
+    return 0;
   }
   stepElapsed(recipe) {
     const s = recipe.steps[this.index(recipe)];
@@ -53,7 +57,8 @@ class BrewTimer {
   }
   water(recipe) {
     const s = recipe.steps[this.index(recipe)];
-    const p = Math.min(Math.max((this.timeline - s.startSeconds) / (s.endSeconds - s.startSeconds), 0), 1);
+    const duration = Math.max(s.endSeconds - s.startSeconds, 1);
+    const p = Math.min(Math.max((this.timeline - s.startSeconds) / duration, 0), 1);
     return Math.min(s.startWaterGrams + (s.endWaterGrams - s.startWaterGrams) * p, recipe.waterGrams);
   }
 }
