@@ -302,5 +302,6 @@ $("seatInput").addEventListener("keydown",e=>{if(e.key==="Enter")analyze()});
 $("back").onclick=$("retry").onclick=()=>{$("result").classList.add("hidden");$("home").classList.remove("hidden");};
 window.addEventListener("resize",()=>{if(!$("result").classList.contains("hidden")&&!THEATERS[$("theater").value].infoOnly){const id=$("resultSeat").textContent;renderMap($("theater").value,id)}});
 </script>
+<footer style="text-align:center;padding:16px 20px 28px;font-size:12px;color:var(--muted)"><a href="/privacy/" style="color:inherit;text-underline-offset:3px">개인정보처리방침</a></footer>
 </body>
 </html>
