@@ -3,3 +3,4 @@
 html{scroll-padding-top:calc(var(--dock-height,200px) + 12px)}.control-dock .section-title{font-size:12px;margin-bottom:4px}.control-dock select{min-height:40px;padding:6px 10px}.controls{gap:6px}.controls button{font-size:13px;padding:8px 10px}#status:empty{display:none}
 
 .progress-block{margin-top:7px}.progress-title{display:block;font-size:11px;color:var(--secondary);margin-bottom:3px}.progress-ends{display:flex;justify-content:space-between;margin-top:1px;color:var(--secondary);font-size:10px;font-variant-numeric:tabular-nums}
+.warning{color:#9a5b00;font-weight:600}#retry{width:100%;font-size:12px;min-height:36px;padding:6px;color:var(--accent)}

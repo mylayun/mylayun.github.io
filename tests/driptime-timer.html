@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Drip timer tests</title></head>
+<body>
+<pre id="results">Running…</pre>
+<script src="../driptime/timer.js"></script>
+<script>
+const output = [];
+const assert = (condition, message) => {
+  if (!condition) throw new Error(message);
+};
+const test = (name, run) => {
+  try { run(); output.push(`PASS ${name}`); }
+  catch (error) { output.push(`FAIL ${name}: ${error.message}`); }
+};
+const recipe = {
+  targetSeconds: 30,
+  waterGrams: 100,
+  steps: [
+    {startSeconds: 0, endSeconds: 10, startWaterGrams: 0, endWaterGrams: 40, manualAdvance: false},
+    {startSeconds: 10, endSeconds: 11, startWaterGrams: 40, endWaterGrams: 40, manualAdvance: true},
+    {startSeconds: 11, endSeconds: 30, startWaterGrams: 40, endWaterGrams: 100, manualAdvance: false}
+  ]
+};
+
+test('pause and resume preserve elapsed time', () => {
+  let now = 0; const timer = new BrewTimer(() => now);
+  timer.start(recipe); now = 5; timer.pause(); now = 20; timer.start(recipe); now = 23; timer.tick();
+  assert(timer.elapsed === 8, `expected 8 seconds, got ${timer.elapsed}`);
+});
+
+test('manual drawdown waits without consuming the next step', () => {
+  let now = 0; const timer = new BrewTimer(() => now);
+  timer.start(recipe); now = 10; timer.tick(); assert(timer.waiting, 'manual wait did not start');
+  now = 25; timer.tick(); assert(timer.timeline === 10, 'recipe timeline advanced while waiting');
+  timer.advance(); assert(timer.timeline === 11, 'manual step did not advance');
+  now = 30; timer.tick(); assert(timer.timeline === 16, `expected timeline 16, got ${timer.timeline}`);
+});
+
+test('timer completes at the recipe target', () => {
+  let now = 0; const timer = new BrewTimer(() => now);
+  const automatic = {...recipe, steps: recipe.steps.map(step => ({...step, manualAdvance: false}))};
+  timer.start(automatic); now = 30; timer.tick();
+  assert(timer.complete && !timer.running, 'timer did not complete');
+});
+
+document.getElementById('results').textContent = output.join('\n');
+if (output.some(line => line.startsWith('FAIL'))) throw new Error('Drip timer tests failed');
+</script>
+</body>
+</html>

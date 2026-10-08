@@ -21,6 +21,9 @@ function renderRecipe() {
   $('metadata').textContent = `${text(selected.brewer)} · ${dose}g / ${selected.waterGrams}ml · ${selected.waterTemperature}°C`;
   const factor = dose / base.coffeeGrams;
   $('grind').textContent = text(base.grindNote).replace(/(\d+(?:\.\d+)?)(g|ml)\b/g,(_,value) => `${Math.round(Number(value)*factor/5)*5}ml`);
+  const unverified = base.sourceStatus === 'unverified';
+  $('source-note').hidden = !unverified;
+  $('source-note').textContent = say('⚠️ 출처가 확인되지 않은 레시피입니다. 참고용으로 사용해 주세요.','⚠️ This recipe has not been source-verified. Use it as a reference.');
   $('dose-note').textContent = say('물 목표는 5ml 단위로 조절합니다. 단계 시간은 원본 기준이며 원두 양·분쇄에 따라 실제 추출 시간은 달라집니다.','Water targets use 5ml increments. Recipe timings stay unchanged; actual brew time varies with dose and grind.');
   $('locked').textContent = say('추출 중에는 레시피와 원두 양을 바꿀 수 없습니다. 초기화 후 변경하세요.','Reset before changing the recipe or coffee dose.');
   $('return-current').textContent = say('현재 단계로 돌아가기','Return to Current Step');
@@ -86,22 +89,24 @@ window.addEventListener('keydown',e=>{if(['ArrowDown','ArrowUp','PageDown','Page
 // Scroll events include programmatic motion; only user input suspends follow mode.
 setInterval(()=>{if(timer.running){timer.tick();render();}},100);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){timer.tick();render();}});
-async function loadRecipes(){try{const response=await fetch('recipes.json',{cache:'no-cache'});if(!response.ok)throw new Error('Recipe file unavailable');const catalog=await response.json();validateCatalog(catalog);recipes=catalog.recipes;recipeTranslations=catalog.translations;base=recipes[0];dose=base.coffeeGrams;prepare();renderRecipe();}catch(error){$('status').textContent=say('레시피를 읽을 수 없습니다. 새로고침해 주세요.','Unable to load recipes. Please refresh.');console.error(error);}}
+async function loadRecipes(){try{$('retry').hidden=true;const response=await fetch('recipes.json',{cache:'no-cache'});if(!response.ok)throw new Error('Recipe file unavailable');const catalog=await response.json();validateCatalog(catalog);recipes=catalog.recipes;recipeTranslations=catalog.translations;base=recipes[0];dose=base.coffeeGrams;prepare();renderRecipe();}catch(error){$('status').textContent=say('레시피를 읽을 수 없습니다. 다시 시도해 주세요.','Unable to load recipes. Please try again.');$('retry').textContent=say('다시 시도','Retry');$('retry').hidden=false;console.error(error);}}
 function validateCatalog(catalog) {
   const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   if (catalog.version !== 1 || !catalog.translations || !Array.isArray(catalog.recipes) || !catalog.recipes.length) throw new Error('Invalid catalog');
   const ids = new Set();
   for (const r of catalog.recipes) {
-    if (!uuid.test(r.id) || ids.has(r.id) || r.isBuiltIn !== true || !r.name || !Number.isFinite(r.coffeeGrams) || r.coffeeGrams <= 0 || !Number.isFinite(r.waterGrams) || r.waterGrams <= 0 || !Number.isInteger(r.targetSeconds) || !r.steps?.length) throw new Error('Invalid recipe');
+    if (!uuid.test(r.id) || ids.has(r.id) || r.isBuiltIn !== true || !r.name || !Number.isFinite(r.coffeeGrams) || r.coffeeGrams <= 0 || !Number.isFinite(r.waterGrams) || r.waterGrams <= 0 || !Number.isFinite(r.waterTemperature) || r.waterTemperature < 60 || r.waterTemperature > 100 || !Number.isInteger(r.targetSeconds) || !r.steps?.length) throw new Error('Invalid recipe');
     ids.add(r.id);
     let seconds = 0, water = 0; const steps = new Set();
     for (const step of r.steps) {
-      if (!uuid.test(step.id) || steps.has(step.id) || !step.name || !Number.isInteger(step.startSeconds) || !Number.isInteger(step.endSeconds) || step.startSeconds !== seconds || step.endSeconds <= seconds || step.startWaterGrams !== water || !Number.isFinite(step.endWaterGrams) || step.endWaterGrams < water || step.endWaterGrams > r.waterGrams) throw new Error('Invalid step');
+      if (!uuid.test(step.id) || steps.has(step.id) || !step.name || !Number.isInteger(step.startSeconds) || !Number.isInteger(step.endSeconds) || step.startSeconds !== seconds || step.endSeconds <= seconds || !Number.isFinite(step.startWaterGrams) || step.startWaterGrams !== water || !Number.isFinite(step.endWaterGrams) || step.endWaterGrams < water || step.endWaterGrams > r.waterGrams || typeof step.manualAdvance !== 'boolean') throw new Error('Invalid step');
       steps.add(step.id); seconds = step.endSeconds; water = step.endWaterGrams;
     }
     if (seconds !== r.targetSeconds || water !== r.waterGrams) throw new Error('Invalid recipe target');
   }
 }
+
+$('retry').addEventListener('click',loadRecipes);
 
 new ResizeObserver(entries=>{document.documentElement.style.setProperty('--dock-height',`${entries[0].target.getBoundingClientRect().height}px`);}).observe(document.querySelector('.control-dock'));
 loadRecipes();
